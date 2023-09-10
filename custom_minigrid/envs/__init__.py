@@ -1,0 +1,1 @@
+from custom_minigrid.envs.advanced_doorkey import AdvancedDoorKeyEnv
