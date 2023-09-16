@@ -54,7 +54,7 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
         # Place key of corresponding color on left side
         self.place_obj(obj=Key(colors[color_idx]), top=(0,0), size=(splitIdx, height))
         
-        num_additional_keys = self._rand_int(1, 4)
+        num_additional_keys = self._rand_int(1, 3)
         for _ in range(num_additional_keys):
             while color_idx in used_colors:
                 color_idx = self._rand_int(0, len(colors))
