@@ -1,6 +1,7 @@
 from minigrid.envs.doorkey import DoorKeyEnv
 from minigrid.core.world_object import Door, Key, Goal
 from minigrid.core.grid import Grid
+import numpy as np
 
 class AdvancedDoorKeyEnv(DoorKeyEnv):
     def __init__(self, 
@@ -18,6 +19,11 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
         
         self.step(0)
         return self.step(1)
+    
+    def reset(self, *, seed=None, options=None):
+        output = super().reset(seed=seed, options=options)
+        self.carrying = []
+        return output
     
     def _gen_grid(self, width, height):
         
@@ -65,6 +71,36 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
         self.mission = "use key to open the door then get to the goal"
         
     
-    
-    
+    def step(self, action):
+        self.step_count += 1
+            
+        reward = 0
+        terminated = False
+        truncated = False
+        
+        fwd_pos = self.front_pos
+        fwd_cell = self.grid.get(*fwd_pos)
+        
+        if action == self.actions.pickup:
+            if fwd_cell and fwd_cell.can_pickup():
+                self.carrying.append(fwd_cell)
+                fwd_cell.cur_pos = np.array([-1, -1])
+                self.grid.set(fwd_pos[0], fwd_pos[1], None)
+        elif action == self.actions.drop:
+            if not fwd_cell and len(self.carrying) > 0:
+                self.grid.set(fwd_pos[0], fwd_pos[1], self.carrying[-1])
+                self.carrying[-1].cur_pos = fwd_pos
+                self.carrying.pop()
+        else:
+            return super().step(action)
+        
+        if self.step_count >= self.max_steps:
+            truncated = True
+
+        if self.render_mode == "human":
+            self.render()
+
+        obs = self.gen_obs()
+
+        return obs, reward, terminated, truncated, {}
     
