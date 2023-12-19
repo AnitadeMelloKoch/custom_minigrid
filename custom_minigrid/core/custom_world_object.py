@@ -44,5 +44,10 @@ class CustomDoor(Door):
         self.is_open = not self.is_open
         return True
     
+class CustomKey(Key):
+    def __init__(self, color: str = "blue"):
+        super().__init__(color)
     
+    def can_overlap(self) -> bool:
+        return True
 
