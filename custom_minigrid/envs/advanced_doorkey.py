@@ -106,7 +106,7 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
 
         return obs, reward, terminated, truncated, {}
     
-    def gen_obs_grid(self, agent_view_size=None):
+    def gen_obs_grid(self, agent_view_size=100):
         """
         Generate the sub-grid observed by the agent.
         This method also outputs a visibility mask telling us which grid
