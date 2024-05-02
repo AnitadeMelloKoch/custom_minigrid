@@ -9,10 +9,12 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
                  size=8, 
                  max_steps = None, 
                  door_color = None,
+                 possible_key_colours = ["red", "green", "blue", "purple", "yellow", "grey"],
                  **kwargs):
         super().__init__(size, max_steps, **kwargs)
         
         self.door_color = door_color
+        self.possible_key_colours = possible_key_colours
         
     def place_agent_randomly(self, seed_tries):
         for _ in range(seed_tries):
@@ -28,7 +30,7 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
     
     def _gen_grid(self, width, height):
         
-        colors = ["red", "green", "blue", "purple", "yellow", "grey"]
+        colors = self.possible_key_colours
         
         # create empty grid
         self.grid = Grid(width, height)
@@ -61,7 +63,8 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
         # Place key of corresponding color on left side
         self.place_obj(obj=CustomKey(colors[color_idx]), top=(0,0), size=(splitIdx, height))
         
-        num_additional_keys = self._rand_int(1, 5)
+        max_keys = min(5,len(self.possible_key_colours))
+        num_additional_keys = self._rand_int(1, max_keys)
         for _ in range(num_additional_keys):
             while color_idx in used_colors:
                 color_idx = self._rand_int(0, len(colors))

@@ -3,7 +3,11 @@ import custom_minigrid
 import matplotlib.pyplot as plt 
 from minigrid.wrappers import RGBImgObsWrapper
 
-env = RGBImgObsWrapper(gym.make('AdvancedDoorKey-16x16-v0',
+
+# env = RGBImgObsWrapper(gym.make('AdvancedDoorKey-19x19-v0',
+#                render_mode='rgb_array'))
+
+env = RGBImgObsWrapper(gym.make('SmallAdvancedDoorKey-8x8-v0',
                render_mode='rgb_array'))
 
 img, _ = env.reset()
