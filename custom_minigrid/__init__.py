@@ -1,4 +1,5 @@
 from custom_minigrid.envs import AdvancedDoorKeyEnv
+from custom_minigrid.envs import ObservableLockedRoomEnv
 from gymnasium.envs.registration import register
 
 register(
@@ -25,4 +26,10 @@ register(
     kwargs={"size": 8,
             "possible_key_colours": ["red", "green", "blue"],
             "door_color": "red"}
+)
+
+register(
+    id="LockedRoom-v0",
+    entry_point="custom_minigrid.envs:ObservableLockedRoomEnv",
+    
 )

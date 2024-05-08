@@ -1,1 +1,2 @@
 from custom_minigrid.envs.advanced_doorkey import AdvancedDoorKeyEnv
+from custom_minigrid.envs.observable_lockedroom import ObservableLockedRoomEnv
