@@ -64,7 +64,7 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
         self.place_obj(obj=CustomKey(colors[color_idx]), top=(0,0), size=(splitIdx, height))
         
         max_keys = min(5,len(self.possible_key_colours))
-        num_additional_keys = self._rand_int(1, max_keys)
+        num_additional_keys = self._rand_int(2, max_keys)
         for _ in range(num_additional_keys):
             while color_idx in used_colors:
                 color_idx = self._rand_int(0, len(colors))

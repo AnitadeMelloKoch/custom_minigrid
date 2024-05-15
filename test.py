@@ -10,6 +10,9 @@ from minigrid.wrappers import RGBImgObsWrapper
 env = RGBImgObsWrapper(gym.make('SmallAdvancedDoorKey-8x8-v0',
                render_mode='rgb_array'))
 
+# env = RGBImgObsWrapper(gym.make('LockedRoom-v0',
+#                render_mode='rgb_array'))
+
 img, _ = env.reset()
 
 img = img["image"]

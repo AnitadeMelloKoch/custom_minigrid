@@ -31,5 +31,4 @@ register(
 register(
     id="LockedRoom-v0",
     entry_point="custom_minigrid.envs:ObservableLockedRoomEnv",
-    
 )
