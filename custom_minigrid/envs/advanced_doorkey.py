@@ -15,6 +15,7 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
         
         self.door_color = door_color
         self.possible_key_colours = possible_key_colours
+        self.carrying = []
         
     def place_agent_randomly(self, seed_tries):
         for _ in range(seed_tries):
@@ -77,27 +78,28 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
     
     def step(self, action):
         
-        self.step_count += 1
-            
         reward = 0
         terminated = False
         truncated = False
         
-        fwd_pos = self.front_pos
-        fwd_cell = self.grid.get(*fwd_pos)
-        
         if action == self.actions.pickup:
+            fwd_pos = self.front_pos
+            fwd_cell = self.grid.get(*fwd_pos)
             if fwd_cell and fwd_cell.can_pickup():
                 self.carrying.append(fwd_cell)
                 fwd_cell.cur_pos = np.array([-1, -1])
                 self.grid.set(fwd_pos[0], fwd_pos[1], None)
         elif action == self.actions.drop:
+            fwd_pos = self.front_pos
+            fwd_cell = self.grid.get(*fwd_pos)
             if not fwd_cell and len(self.carrying) > 0:
                 self.grid.set(fwd_pos[0], fwd_pos[1], self.carrying[-1])
                 self.carrying[-1].cur_pos = fwd_pos
                 self.carrying.pop()
         else:
             return super().step(action)
+        
+        self.step_count += 1
         
         if self.step_count >= self.max_steps:
             truncated = True
@@ -109,14 +111,35 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
 
         return obs, reward, terminated, truncated, {}
     
-    def gen_obs_grid(self, agent_view_size=100):
+    def get_full_render(self, highlight, tile_size):
+        return super().get_full_render(False, tile_size)
+
+    def gen_obs(self):
+        """
+        Generate the agent's view (partially observable, low-resolution encoding)
+        """
+
+        grid, vis_mask = self.gen_obs_grid()
+
+        # Encode the partially observable view into a numpy array
+        image = grid.encode(None)
+
+        # Observations are dictionaries containing:
+        # - an image (partially observable view of the environment)
+        # - the agent's direction/orientation (acting as a compass)
+        # - a textual mission string (instructions for the agent)
+        obs = {"image": image, "direction": self.agent_dir, "mission": self.mission}
+
+        return obs
+    
+    def gen_obs_grid(self, agent_view_size=None):
         """
         Generate the sub-grid observed by the agent.
         This method also outputs a visibility mask telling us which grid
         cells the agent can actually see.
         if agent_view_size is None, self.agent_view_size is used
         """
-        
+
         topX, topY, botX, botY = self.get_view_exts(agent_view_size)
 
         agent_view_size = agent_view_size or self.agent_view_size
@@ -139,11 +162,5 @@ class AdvancedDoorKeyEnv(DoorKeyEnv):
         # We do this by placing the carried object at the agent's position
         # in the agent's partially observable view
         agent_pos = grid.width // 2, grid.height - 1
-        if self.carrying:
-            grid.set(*agent_pos, self.carrying[-1])
-        else:
-            grid.set(*agent_pos, None)
 
         return grid, vis_mask
-        
-        

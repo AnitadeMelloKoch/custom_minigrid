@@ -15,6 +15,8 @@ env = RGBImgObsWrapper(gym.make('SmallAdvancedDoorKey-8x8-v0',
 
 img, _ = env.reset()
 
+env.step(0)
+
 img = img["image"]
 
 print(img.shape)
