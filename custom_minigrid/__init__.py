@@ -29,6 +29,14 @@ register(
 )
 
 register(
+    id="SmallAdvancedDoorKey-16x16-v0",
+    entry_point="custom_minigrid.envs:AdvancedDoorKeyEnv",
+    kwargs={"size": 16,
+            "possible_key_colours": ["red", "green", "blue"],
+            "door_color": "red"}
+)
+
+register(
     id="LockedRoom-v0",
     entry_point="custom_minigrid.envs:ObservableLockedRoomEnv",
 )
