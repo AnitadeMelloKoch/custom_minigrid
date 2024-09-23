@@ -49,5 +49,5 @@ class CustomKey(Key):
         super().__init__(color)
     
     def can_overlap(self) -> bool:
-        return True
+        return False
 
